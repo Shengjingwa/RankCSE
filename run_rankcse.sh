@@ -3,7 +3,7 @@ CUDA_VISIBLE_DEVICES=2 \
 python train.py \
     --model_name_or_path /data/zzc/models/bert-base-uncased \
     --train_file data/wiki1m_for_simcse.txt \
-    --output_dir runs/scratch-listnet-bert-base-uncased \
+    --output_dir runs/scratch-listmle-bert-base-uncased \
     --num_train_epochs 1 \
     --per_device_train_batch_size 128 \
     --learning_rate 3e-5 \
@@ -21,7 +21,7 @@ python train.py \
     --fp16 \
     --first_teacher_name_or_path /data/zzc/models/diffcse-bert-base-uncased-sts \
     --second_teacher_name_or_path /data/zzc/models/unsup-simcse-bert-large-uncased \
-    --distillation_loss listnet \
+    --distillation_loss listmle \
     --alpha_ 0.33 \
     --beta_ 1.0 \
     --gamma_ 1.0 \
@@ -30,7 +30,7 @@ python train.py \
 
 CUDA_VISIBLE_DEVICES=2 \
 python evaluation.py \
-    --model_name_or_path runs/scratch-listnet-bert-base-uncased \
+    --model_name_or_path runs/scratch-listmle-bert-base-uncased \
     --pooler cls_before_pooler \
     --task_set sts \
     --mode test

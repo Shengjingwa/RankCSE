@@ -15,6 +15,7 @@ from transformers.file_utils import (
     replace_return_docstrings,
 )
 from transformers.modeling_outputs import SequenceClassifierOutput, BaseModelOutputWithPoolingAndCrossAttentions
+from rankcse.intl import intl_RGP 
 
 class MLPLayer(nn.Module):
     """
@@ -161,6 +162,9 @@ def cl_init(cls, config):
         cls.distillation_loss_fct = ListMLE(cls.model_args.tau2, cls.model_args.gamma_)
     else:
         raise NotImplementedError
+    cls.whitening = intl_RGP(num_features=config.hidden_size, gm=cls.model_args.gm, gd=cls.model_args.gd, 
+                             shuffle=cls.model_args.shuffle, shuffle2=cls.model_args.shuffle2, 
+                             axis=cls.model_args.axis, iterations=cls.model_args.iterations) 
     cls.init_weights()
 
 def cl_forward(cls,
@@ -223,8 +227,12 @@ def cl_forward(cls,
 
     # Pooling
     pooler_output = cls.pooler(attention_mask, outputs)
+    # whitening
+    pooler_output = cls.whitening(pooler_output, num_sent=num_sent)
+
     pooler_output = pooler_output.view((batch_size, num_sent, pooler_output.size(-1))) # (bs, num_sent, hidden)
 
+    
     # If using "cls", we add an extra MLP layer
     # (same as BERT's original implementation) over the representation.
     if cls.pooler_type == "cls":

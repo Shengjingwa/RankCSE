@@ -168,7 +168,32 @@ class ModelArguments:
             "help": "Use MLP only during training"
         }
     )
+    
 
+    gm: int = field(
+        default=1
+    )
+    gd: int = field(
+        default=1,
+    )
+
+    shuffle: int = field(
+        default=0,
+        metadata={"help": "Whether to shuffle the input sequences during training."}
+    )
+    shuffle2: int = field(
+        default=0,
+        metadata={"help": "Whether to shuffle the input sequences during training."}
+    )
+    
+    iterations: int = field(
+        default=4,
+    )
+    
+    axis: int = field(
+       default=1
+    )
+    
 
 @dataclass
 class DataTrainingArguments:
